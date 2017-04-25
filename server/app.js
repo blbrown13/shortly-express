@@ -6,6 +6,12 @@ const bodyParser = require('body-parser');
 const Auth = require('./middleware/auth');
 const models = require('./models');
 
+////
+const db = require('./db/index.js');
+const mysql = require('mysql');
+const createTables = require('./db/config');
+////
+
 const app = express();
 
 app.set('views', `${__dirname}/views`);
@@ -19,17 +25,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
 
 
-app.get('/', 
+app.get('/',
 (req, res) => {
   res.render('index');
 });
 
-app.get('/create', 
+app.get('/create',
 (req, res) => {
   res.render('index');
 });
 
-app.get('/links', 
+app.get('/links',
 (req, res, next) => {
   models.Links.getAll()
     .then(links => {
@@ -40,7 +46,7 @@ app.get('/links',
     });
 });
 
-app.post('/links', 
+app.post('/links',
 (req, res, next) => {
   var url = req.body.url;
   if (!models.Links.isValidUrl(url)) {
@@ -79,7 +85,43 @@ app.post('/links',
 /************************************************************/
 // Write your authentication routes here
 /************************************************************/
+app.get('/signup',
+(req, res) => {
+  res.render('signup.ejs');
+});
 
+app.post('/signup',
+(req, res, next) => {
+  var username = req.body.username;
+  var dbString = `INSERT INTO users (username) VALUES ("${username}")`;
+  models.Users.create(dbString);
+  return res.sendStatus(201);
+});
+
+app.get('/login',
+(req, res) => {
+  res.render('login.ejs');
+});
+
+
+
+
+
+// app.post('/users',
+// (req, res, next) => {
+//   console.log('inside app post!!!');
+  // console.log('inside app.post!')
+  // models.users
+  // var user = options.json.username;
+  // var password = options.json.password;
+  // post: function (options, cb) {
+  //   console.log('USER: ', user, 'PASSWORD: ', password);
+  //   var dbString = 'INSERT INTO users (username, password) VALUES (?, ?)';
+  //   db.query(dbString, function(err, results) {
+  //     cb(err, results);
+  //   });
+  // }
+// });
 
 
 /************************************************************/
