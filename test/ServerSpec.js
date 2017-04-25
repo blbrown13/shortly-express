@@ -39,16 +39,15 @@ describe('', function() {
     /* TODO: Update user and password if different than on your local machine            */
     /*************************************************************************************/
     db = mysql.createConnection({
-      user: 'student',
-      password: 'student',
+      user: 'root',
+      password: 'plantlife',
       database: 'shortly'
     });
 
     /**************************************************************************************/
     /* TODO: If you create a new MySQL tables, add it to the tablenames collection below. */
     /**************************************************************************************/
-    var tablenames = ['links', 'clicks'
-];
+    var tablenames = ['links', 'clicks', 'users'];
 
     db.connect(function(err) {
       if (err) { return done(err); }
@@ -125,7 +124,7 @@ describe('', function() {
     });
   });
 
-  xdescribe('Account Creation:', function() {
+  describe('Account Creation:', function() {
 
     it('signup creates a new user record', function(done) {
       var options = {
@@ -188,7 +187,7 @@ describe('', function() {
           if (err) { return done(err); }
           expect(response.headers.location).to.equal('/signup');
           done();
-        });        
+        });
       });
     });
 
@@ -521,7 +520,7 @@ describe('', function() {
     var cookieJar;
 
     var addUser = function(callback) {
-      
+
       var options = {
         'method': 'POST',
         'uri': 'http://127.0.0.1:4568/signup',
@@ -602,7 +601,7 @@ describe('', function() {
       });
     });
   });
-  
+
   xdescribe('Privileged Access:', function() {
 
     it('Redirects to login page if a user tries to access the main page and is not signed in', function(done) {
