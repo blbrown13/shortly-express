@@ -89,34 +89,23 @@ app.post('/signup',
   models.Users.get({ username: req.body.username })
   .then(user => {
     if (user) {
-      console.log('has user');
-      // throw user;
-      res.redirect('/signup');
-      // redirect to login page
-      // throw user and catch user
+      throw user;
     }
-    console.log('no user');
   })
   .then( () => {
-    console.log('create time');
+    var hashedPassword = models.Users.hashPassword(req.body.password);
     models.Users.create({
       username: req.body.username,
-      password: req.body.password
+      password: hashedPassword
     });
-    res.end();
+    res.redirect('/');
   })
   // .error(error => {
   //   res.status(500).send(error);
   // })
   .catch(user => {
-    // this is the redirect
-    res.send(200);
-    res.render('login');
+    res.redirect('/signup');
   });
-  // models.Users.createUserPassword(req.body.password, function(err,results){
-  //   if (err) {throw err};
-  // });
-  // next();
 });
 
 app.get('/login',
