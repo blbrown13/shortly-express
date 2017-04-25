@@ -6,12 +6,6 @@ const bodyParser = require('body-parser');
 const Auth = require('./middleware/auth');
 const models = require('./models');
 
-////
-const db = require('./db/index.js');
-const mysql = require('mysql');
-const createTables = require('./db/config');
-////
-
 const app = express();
 
 app.set('views', `${__dirname}/views`);
@@ -86,16 +80,43 @@ app.post('/links',
 // Write your authentication routes here
 /************************************************************/
 app.get('/signup',
-(req, res) => {
-  res.render('signup.ejs');
+(req, res, next) => {
+  res.render('signup');
 });
 
 app.post('/signup',
 (req, res, next) => {
-  var username = req.body.username;
-  var dbString = `INSERT INTO users (username) VALUES ("${username}")`;
-  models.Users.create(dbString);
-  return res.sendStatus(201);
+  models.Users.get({ username: req.body.username })
+  .then(user => {
+    if (user) {
+      console.log('has user');
+      // throw user;
+      res.redirect('/signup');
+      // redirect to login page
+      // throw user and catch user
+    }
+    console.log('no user');
+  })
+  .then( () => {
+    console.log('create time');
+    models.Users.create({
+      username: req.body.username,
+      password: req.body.password
+    });
+    res.end();
+  })
+  // .error(error => {
+  //   res.status(500).send(error);
+  // })
+  .catch(user => {
+    // this is the redirect
+    res.send(200);
+    res.render('login');
+  });
+  // models.Users.createUserPassword(req.body.password, function(err,results){
+  //   if (err) {throw err};
+  // });
+  // next();
 });
 
 app.get('/login',

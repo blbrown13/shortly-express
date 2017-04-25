@@ -1,39 +1,37 @@
-const db = require('../db/index.js');
 const utils = require('../lib/hashUtils');
 const Model = require('./model');
-
-// Write you user database model methods here
-// module.exports = {
-//   createUser: {
-//
-//   }
-// };
+// crypto
 
 class Users extends Model {
   constructor() {
     super('users');
   }
 
-  create(options) {
-    db.query(options, function(err, results) {
-      cb(err, results);
-    });
-  }
+  // createUserName(user, cb) {
+  //   var dbString = `INSERT INTO users (username) VALUES ("${user}")`;
+  //   // db.query(dbString, cb);
+  //   create(options) {
+  //     let queryString = `INSERT INTO ${this.tablename} SET ?`;
+  //     return executeQuery(queryString, options);
+  //   }
+  // }
+
+  // createUserPassword(password, cb) {
+  //   var dbString = `INSERT INTO users (password) VALUES ("${password}")`;
+  //   db.query(dbString, cb);
+  // }
 }
 
 module.exports = new Users();
 
 // class Links extends Model {
 
-
 // Model.create(){}
-
 
 // create(options) {
 //   let queryString = `INSERT INTO ${this.tablename} SET ?`;
 //   return executeQuery(queryString, options);
 // }
-
 
 // get: function(){},
 // post: function (options, cb) {
