@@ -24,12 +24,21 @@ module.exports = (db) => {
           linkId INT,
           timestamp TIMESTAMP
         );`);
-    })
-  /************************************************************/
-  /*          Add additional schema queries here              */
-  /************************************************************/
-
-    .error(err => {
-      console.log(err);
-    });
-};
+      })
+      /************************************************************/
+      /*          Add additional schema queries here              */
+      /************************************************************/
+      .then(() => {
+        // Create users table
+        return db.queryAsync(`
+          CREATE TABLE IF NOT EXISTS users (
+            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(20) UNIQUE,
+            password VARCHAR(20),
+            timestamp TIMESTAMP
+          );`);
+        })
+        .error(err => {
+          console.log(err);
+        });
+      };
