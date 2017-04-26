@@ -24,21 +24,33 @@ module.exports = (db) => {
           linkId INT,
           timestamp TIMESTAMP
         );`);
-      })
-      /************************************************************/
-      /*          Add additional schema queries here              */
-      /************************************************************/
-      .then(() => {
-        // Create users table
-        return db.queryAsync(`
-          CREATE TABLE IF NOT EXISTS users (
-            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            username VARCHAR(255) UNIQUE,
-            password VARCHAR(255),
-            timestamp TIMESTAMP
-          );`);
-        })
-        .error(err => {
-          console.log(err);
-        });
-      };
+    })
+  /************************************************************/
+  /*          Add additional schema queries here              */
+  /************************************************************/
+
+    .then(() => {
+      return db.queryAsync(`
+        CREATE TABLE IF NOT EXISTS users (
+          id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+          username VARCHAR(40) UNIQUE,
+          password VARCHAR(64),
+          salt VARCHAR(64),
+          timestamp TIMESTAMP
+        );`);
+    })
+    .then(() => {
+      return db.queryAsync(`
+        CREATE TABLE IF NOT EXISTS sessions (
+          id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+          hash VARCHAR(64),
+          salt VARCHAR(64),
+          user_id INT,
+          timestamp TIMESTAMP
+        )`);
+    })
+
+    .error(err => {
+      console.log(err);
+    });
+};

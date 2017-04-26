@@ -1,34 +1,51 @@
-const crypto = require('crypto');
-const Promise = require('bluebird');
-const request = Promise.promisify(require('request'), { multiArgs: true });
 const utils = require('../lib/hashUtils.js');
 const Model = require('./model');
+
+// Write you user database model methods here
+// code refactored after solution code review
 
 class Users extends Model {
   constructor() {
     super('users');
   }
-  // crypto to hash password
-  hashPassword(password) {
-    var hashedPW = utils.makeHash(password);
-    return hashedPW;
+
+  compare(attempted, password, salt) {
+    return utils.compareHash(attempted, password, salt);
+  }
+
+  create({ username, password }) {
+    let timestamp = Date.now();
+    let salt = utils.createSalt(timestamp);
+
+    let newUser = {
+      username,
+      salt,
+      password: utils.createHash(password, salt)
+    };
+
+    return super.create.call(this, newUser);
   }
 }
 
 module.exports = new Users();
 
 
+/************************************************************/
+// code prior to solution demo
+/************************************************************/
 
-// createUserName(user, cb) {
-//   var dbString = `INSERT INTO users (username) VALUES ("${user}")`;
-//   // db.query(dbString, cb);
-//   create(options) {
-//     let queryString = `INSERT INTO ${this.tablename} SET ?`;
-//     return executeQuery(queryString, options);
+// class Users extends Model {
+//   constructor() {
+//     super('users');
 //   }
-// }
-
-// createUserPassword(password, cb) {
-//   var dbString = `INSERT INTO users (password) VALUES ("${password}")`;
-//   db.query(dbString, cb);
+//   // crypto to hash password
+//   hashPassword(password) {
+//     var hashedPW = utils.makeHash(password);
+//     return hashedPW;
+//   }
+//
+//   validateUserPassword(username, password) {
+//     var hashed = Users.hashPassword(password);
+//     console.log('validateUserPassword: ', hashed);
+//   }
 // }
